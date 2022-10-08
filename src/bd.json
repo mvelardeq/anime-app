@@ -1,0 +1,31 @@
+{
+    "collection":[
+        {
+            "user_id":{
+                "infoUser":{
+                    "birthdate":24553,
+                    "photoURL":"484fn/40in/fn.png"
+                },
+                "favorites":{
+                    
+                },
+                "Journal":{
+                    "notes":[
+                    {
+                        "note_id":"ri8r8b",
+                        "body":"omdodm",
+                        "date":24234,
+                        "title":"domofm"
+                    },
+                    {
+                        "note_id":"ri8r8b",
+                        "body":"omdodm",
+                        "date":24234,
+                        "title":"domofm"
+                    }
+                ]
+                }
+            }
+        }
+    ]
+}
