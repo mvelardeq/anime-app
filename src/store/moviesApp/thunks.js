@@ -1,8 +1,9 @@
-import { addPost, getMovies, loadFavorites, newFavorite, removeFavoriteMovie, savingNewInfo } from "./moviesSlice"
+import { addPost, getAttachMovies, getMovies, loadFavorites, newFavorite, removeFavoriteMovie, savingNewInfo } from "./moviesSlice"
 import {arrayRemove, arrayUnion, collection, doc, getDoc, setDoc, updateDoc} from 'firebase/firestore'
 import { FirebaseDB } from "../../firebase/config"
 import { getMovieById } from "../../helpers/getMovieById"
 import { upLoadFile } from "../../helpers/uploadFile"
+import { movieResponseByData } from "../../helpers/movieResponseByData"
 
 
 export const getMoviesByURL = (url)=>{
@@ -11,17 +12,20 @@ export const getMoviesByURL = (url)=>{
         const {data} = await result.json()
         const resultMovies =[]
         data.forEach(item=>{
-            resultMovies.push({
-                id: item.mal_id,
-                image: item.images.webp.large_image_url,
-                title:item.title,
-                year:item.year,
-                score:item.score,
-                synopsis:item.synopsis,
-                genres:item.genres,
-            })
+            resultMovies.push(movieResponseByData(item))
         })
         dispatch(getMovies(resultMovies))
+    }
+}
+export const getAttachMoviesByURL = (url)=>{
+    return async(dispatch)=>{
+        const result = await fetch(url)
+        const {data} = await result.json()
+        const resultMovies =[]
+        data.forEach(item=>{
+            resultMovies.push(movieResponseByData(item))
+        })
+        dispatch(getAttachMovies(resultMovies))
     }
 }
 

@@ -1,14 +1,29 @@
 import { useEffect, useRef, useState } from "react";
 import { MoviesLayout } from "../layout";
 import { useSelector } from "react-redux";
-import { OptionsIcon, ShowMoviesbyURL } from "../components";
+import { OptionsIcon } from "../components";
 import { attachIcon, imageIcon } from "../../assets/icons";
 import { useForm } from "react-hook-form";
 import { Modal } from "flowbite-react";
 import { ShowAttachedMovies } from "../components/ShowAttachedMovies";
+import { FormSearch } from "../components/FormSearch";
+import { getMovieById } from "../../helpers/getMovieById";
 
 export const HomePage = () => {
   const { displayName, photoURL, email } = useSelector((state) => state.auth);
+
+  const [attatchMovieId, setAttatchMovieId] = useState("")
+
+  const [attachedPhoto, setAttachedPhoto] = useState(null)
+  const getMovie = async()=>{
+    const movie=await getMovieById(attatchMovieId)
+    console.log(movie)
+    setAttachedPhoto(movie.image)
+  }
+
+  useEffect(()=>{
+    if(attatchMovieId!=='') getMovie() /* setAttachedPhoto(getMovieById(attatchMovieId).image) */
+  },[attatchMovieId])
 
   // Form
   const {
@@ -26,26 +41,11 @@ export const HomePage = () => {
     setUrl(ruta);
   }, [selectedFile]);
   const onSubmitSocial = (data) => {
-    console.log(data);
+    console.log({...data,attatchMovieId});
   };
 
-  // Modal Attach movie in form
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const initialFormModal ={attachMovie:''}
-  const [formModal, setFormModal] = useState(initialFormModal);
   const [searchMovies, setSearchMovies] = useState("");
-  const onInputChange = ({ target }) => {
-    console.log(target.value);
-    setFormModal({...formModal,[target.name]:target.value});
-  };
-  const onResetModalForm = ()=>{
-    setFormModal(initialFormModal)
-  }
-  const onModalSubmit = (e) => {
-    e.preventDefault();
-    if(formModal.attachMovie==='') return setSearchMovies('')
-    setSearchMovies(`https://api.jikan.moe/v4/anime?q=${formModal.attachMovie}`);
-  };
 
   const dropElement = useRef(null);
   const showDropdown = () => {
@@ -81,7 +81,11 @@ export const HomePage = () => {
                 {errors.description.message}
               </p>
             )}
-            <img src={url ? url : ""} className={url ? "mt-4" : ""} alt="" />
+            <div className="imagesForm relative">
+              <img src={url ? url : ""} className={url ? "mt-4" : ""} alt="" />
+              {attachedPhoto && <img src={attachedPhoto} className={` ${url ? "absolute top-1 right-1 h-36 rounded-3xl" : "h-96 mt-4"}`} alt="" />}
+            </div>
+            {/* <input type="hidden" value={attatchMovieId} {...register("attachedMovieId")} /> */}
           </div>
         </div>
         <div className="flex items-center px-8 py-2 flex-wrap text-sm font-medium text-center text-gray-500 bg-gray-50 rounded-b-lg border-t border-gray-200 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
@@ -260,68 +264,13 @@ export const HomePage = () => {
       >
         <Modal.Header>Attach some movie</Modal.Header>
         <Modal.Body>
-          <form className="flex items-center" onSubmit={onModalSubmit}>
-            <label htmlFor="simple-search" className="sr-only">
-              Search
-            </label>
-            <div className="relative w-full">
-              <div className="flex absolute inset-y-0 left-0 items-center justify-between pl-3 pointer-events-none w-full">
-                <svg
-                  aria-hidden="true"
-                  className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clipRule="evenodd"
-                  ></path>
-                </svg>
-                
-              </div>
-              <input
-                type="text"
-                id="attachMovie"
-                name="attachMovie"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                placeholder="Search"
-                value={formModal.attachMovie}
-                onChange={onInputChange}
-              />
-              {(formModal.attachMovie!='') && <div onClick={()=>{onResetModalForm();setSearchMovies('')}} className="absolute right-4 z-50 top-2 hover:cursor-pointer">x</div>}
-            </div>
-            <button
-              type="submit"
-              className="p-2.5 ml-2 text-sm font-medium text-white bg-blue-700 rounded-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            >
-              <svg
-                className="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
-              <span className="sr-only">Search</span>
-              
-            </button>
-          </form>
+          <FormSearch searchMovies={searchMovies} setSearchMovies={setSearchMovies} />
           <div
-            
             className="mt-3 bg-white sm:flex-row dark:bg-transparent h-96 overflow-auto"
           >
             {
-              searchMovies==='' ? <p className="dark:text-white">Search a movie...</p> : <ShowAttachedMovies url={searchMovies} page={9} />
+              searchMovies==='' ? <p className="dark:text-white">Search a movie...</p> : <ShowAttachedMovies url={searchMovies} page={9} setAttatchMovieId={setAttatchMovieId} />
             }
-            
           </div>
         </Modal.Body>
       </Modal>

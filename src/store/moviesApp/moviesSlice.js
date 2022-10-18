@@ -7,7 +7,6 @@ const initialState = {
   favorites: [],
   friends: [],
   allPosts:[],
-  attachMovies:[],
   genresInterest: [],
 };
 
@@ -29,6 +28,9 @@ export const moviesSlice = createSlice({
     },
     getMovies: (state, { payload }) => {
       state.movies = payload;
+    },
+    getAttachMovies: (state, { payload }) => {
+      state.moviesForAttaching = payload;
     },
     addMovies: (state, { payload }) => {
       state.movies = state.movies.concat(payload);
@@ -54,4 +56,5 @@ export const {
   removeFavoriteMovie,
   resetMoviesState,
   addPost,
+  getAttachMovies,
 } = moviesSlice.actions;
