@@ -1,30 +1,24 @@
-import { useCallback, useState } from "react";
-import { useRef } from "react";
 import { useEffect } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
-import { addMovies } from "../../store/moviesApp/moviesSlice";
-import { getMoviesByURL } from "../../store/moviesApp/thunks";
-import { CheckingAuth } from "../../ui/CheckingAuth";
+import { getAttachMoviesByURL, getMoviesByURL } from "../../store/moviesApp/thunks";
 import { CardMovie } from "./CardMovie";
 
-export const ShowAttachedMovies = ({ url, page }) => {
+export const ShowAttachedMovies = ({ url, page, setAttatchMovieId }) => {
 
-  const { movies } = useSelector((state) => state.movies);
-
+  const {moviesForAttaching} = useSelector((state) => state.movies);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getMoviesByURL(`${url}&page=1`));
+    dispatch(getAttachMoviesByURL(`${url}&page=1`));
   }, [url]);
 
 
   return (
     
         <div className="grid-cards mt-6">
-          {movies.map((movie) => (
-            <CardMovie key={movie.id} {...movie} />
+          {moviesForAttaching.map((movie) => (
+            <CardMovie key={movie.id} {...movie} isCardForAttach setAttatchMovieId={setAttatchMovieId} />
           ))}
         </div>
   );

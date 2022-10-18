@@ -5,18 +5,26 @@ import { HeartIcon } from "./HeartIcon";
 import {Button,Modal} from 'flowbite-react'
 import { useState } from "react";
 
-export const CardMovie = ({id,image,title,score,year,synopsis}) => {
+export const CardMovie = ({id,image,title,score,year,isCardForAttach=false,setAttatchMovieId}) => {
 
   const {favorites} = useSelector(state=>state.movies)
   const dispatch = useDispatch()
 
   const [isModalVisible, setIsModalVisible] = useState(false)
+  const onClickImageCard = (e)=>{
+    console.log('se dio click a la imagen')
+    e.preventDefault()
+    
+
+    if(isCardForAttach) return setAttatchMovieId(id)
+    setIsModalVisible(true)
+  }
 
   return (
     <div
       className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-md dark:bg-gray-800 dark:border-gray-700 relative"
     >
-        <a href="#" onClick={(e)=>{e.preventDefault();setIsModalVisible(true)}}>
+        <a href="#" onClick={onClickImageCard}>
             <img className="rounded-t-lg h-72 w-full" src={image} alt="" />
         </a>
         <HeartIcon
