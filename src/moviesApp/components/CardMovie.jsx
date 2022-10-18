@@ -46,7 +46,7 @@ export const CardMovie = ({id,image,title,score,year,synopsis}) => {
             {year && <div className="year mt-auto">({year})</div>}
           </div>
           
-          <Modal
+          {/* <Modal
             show={isModalVisible}
             onClose={()=>setIsModalVisible(false)}
             style={{height:"100vh"}}
@@ -65,7 +65,7 @@ export const CardMovie = ({id,image,title,score,year,synopsis}) => {
                 </div>
               </div>
             </Modal.Body>
-          </Modal>
+          </Modal> */}
 
         </div>
     </div>

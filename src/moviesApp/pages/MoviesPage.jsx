@@ -89,7 +89,7 @@ export const MoviesPage = () => {
           Popular movies right now
         </h2>
 
-        <ShowMoviesbyURL url={searchMovies} />
+        <ShowMoviesbyURL url={searchMovies} page={20} />
       </article>
     </MoviesLayout>
   );

@@ -3,9 +3,11 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   isSaving: false,
   movies: [],
+  moviesForAttaching:[],
   favorites: [],
   friends: [],
   allPosts:[],
+  attachMovies:[],
   genresInterest: [],
 };
 

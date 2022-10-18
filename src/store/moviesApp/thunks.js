@@ -26,7 +26,6 @@ export const getMoviesByURL = (url)=>{
 }
 
 
-
 export const startNewFavorite = (mal_id)=>{
     return async(dispatch, getState)=>{
         // dispatch(savingNewInfo())
@@ -68,8 +67,13 @@ export const startGetFavorites = ()=>{
 
         if(!favorites) return null
 
+        function timeout(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
         const myfunc = async()=>{
             for (const favorite of favorites) {
+                await timeout(180)
                 const result = await getMovieById(favorite)
                 favoriteMovies.push(result)
             }
