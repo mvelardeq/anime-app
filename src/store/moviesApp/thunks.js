@@ -1,9 +1,10 @@
-import { addPost, getAttachMovies, getMovies, loadFavorites, newFavorite, removeFavoriteMovie, savingNewInfo } from "./moviesSlice"
-import {arrayRemove, arrayUnion, collection, doc, getDoc, setDoc, updateDoc} from 'firebase/firestore'
+import { addPost, getAttachMovies, getMovies, getPosts, loadFavorites, newFavorite, removeFavoriteMovie, savingNewInfo } from "./moviesSlice"
+import {addDoc, arrayRemove, arrayUnion, collection, doc, getDoc, getDocs, setDoc, updateDoc} from 'firebase/firestore'
 import { FirebaseDB } from "../../firebase/config"
 import { getMovieById } from "../../helpers/getMovieById"
 import { upLoadFile } from "../../helpers/uploadFile"
 import { movieResponseByData } from "../../helpers/movieResponseByData"
+import { async } from "@firebase/util"
 
 
 export const getMoviesByURL = (url)=>{
@@ -77,7 +78,7 @@ export const startGetFavorites = ()=>{
 
         const myfunc = async()=>{
             for (const favorite of favorites) {
-                await timeout(180)
+                await timeout(340)
                 const result = await getMovieById(favorite)
                 favoriteMovies.push(result)
             }
@@ -87,21 +88,38 @@ export const startGetFavorites = ()=>{
     }
 }
 
-export const startNewPost = ({description,photoFile,relatedMovie})=>{
+
+export const startGetPosts = () => {
+    return async(dispatch,getState)=>{
+        const userSnapshot = await getDocs(collection(FirebaseDB,"user"))
+        userSnapshot.forEach(async(user)=>{
+            const posts = await getDocs(collection(FirebaseDB,`user/${user.id}/post`))
+            const userSnapshot = await getDoc(doc(FirebaseDB,`user/${user.id}`))
+            const {userInfo} = userSnapshot.data()
+
+            if(!posts.empty) posts.forEach((doc)=>dispatch(addPost({...doc.data(), userInfo,id:doc.id})))
+        })
+    }
+}
+
+
+export const startCreateNewPost = ({description,selectedFile,attatchMovieId:relatedMovieId,date})=>{
     return async(dispatch, getState)=>{
 
-        const photoURL = await upLoadFile(photoFile)
+        const photoPost = await upLoadFile(selectedFile)
 
-        dispatch(addPost({description,photoURL,relatedMovie}))
         
         const {uid} = getState().auth
         const postCollectionRef = collection(FirebaseDB,`user/${uid}/post`)
 
-        await setDoc(postCollectionRef,{
+
+        const result =await addDoc(postCollectionRef,{
             description,
-            photoURL,
-            relatedMovie
+            photoPost,
+            relatedMovieId,
+            date
         })
+        dispatch(addPost({description,photoPost,relatedMovieId,id:result.id,userId:uid}))
 
     }
 }

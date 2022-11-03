@@ -5,7 +5,7 @@ import { login, logout } from "../store/auth"
 
 import { onAuthStateChanged } from "firebase/auth"
 import { FirebaseAuth } from "../firebase/config"
-import { startGetFavorites } from "../store/moviesApp/thunks"
+import { startGetFavorites, startGetPosts } from "../store/moviesApp/thunks"
 
 export const useCheckAuth = () => {
 
@@ -21,6 +21,7 @@ export const useCheckAuth = () => {
             dispatch(login({uid,displayName,email,photoURL}))
 
             dispatch(startGetFavorites())
+            dispatch(startGetPosts())
         })
 
     },[])

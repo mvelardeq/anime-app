@@ -5,7 +5,7 @@ import { HeartIcon } from "./HeartIcon";
 import {Button,Modal} from 'flowbite-react'
 import { useState } from "react";
 
-export const CardMovie = ({id,image,title,score,year,isCardForAttach=false,setAttatchMovieId}) => {
+export const CardMovie = ({id,image,title,score,year,synopsis,isCardForAttach=false,setAttatchMovieId}) => {
 
   const {favorites} = useSelector(state=>state.movies)
   const dispatch = useDispatch()
@@ -16,7 +16,7 @@ export const CardMovie = ({id,image,title,score,year,isCardForAttach=false,setAt
     e.preventDefault()
     
 
-    if(isCardForAttach) return setAttatchMovieId(id)
+    if(isCardForAttach) {setIsModalVisible(false);return setAttatchMovieId(id)}
     setIsModalVisible(true)
   }
 
@@ -54,7 +54,7 @@ export const CardMovie = ({id,image,title,score,year,isCardForAttach=false,setAt
             {year && <div className="year mt-auto">({year})</div>}
           </div>
           
-          {/* <Modal
+          <Modal
             show={isModalVisible}
             onClose={()=>setIsModalVisible(false)}
             style={{height:"100vh"}}
@@ -73,7 +73,7 @@ export const CardMovie = ({id,image,title,score,year,isCardForAttach=false,setAt
                 </div>
               </div>
             </Modal.Body>
-          </Modal> */}
+          </Modal>
 
         </div>
     </div>

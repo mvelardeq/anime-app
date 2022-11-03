@@ -35,8 +35,11 @@ export const moviesSlice = createSlice({
     addMovies: (state, { payload }) => {
       state.movies = state.movies.concat(payload);
     },
+    getPosts: (state, { payload }) => {
+      state.allPosts = payload;
+    },
     addPost: (state, { payload }) => {
-      state.allPosts = state.allPosts.push(payload);
+      state.allPosts.push(payload);
     },
     loadFavorites: (state, { payload }) => {
       state.favorites = payload;
@@ -57,4 +60,5 @@ export const {
   resetMoviesState,
   addPost,
   getAttachMovies,
+  getPosts,
 } = moviesSlice.actions;

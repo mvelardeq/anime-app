@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { MoviesLayout } from "../layout";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { OptionsIcon } from "../components";
 import { attachIcon, imageIcon } from "../../assets/icons";
 import { useForm } from "react-hook-form";
@@ -8,9 +8,13 @@ import { Modal } from "flowbite-react";
 import { ShowAttachedMovies } from "../components/ShowAttachedMovies";
 import { FormSearch } from "../components/FormSearch";
 import { getMovieById } from "../../helpers/getMovieById";
+import { startCreateNewPost } from "../../store/moviesApp/thunks";
+import { CardPost } from "../components/CardPost";
 
 export const HomePage = () => {
   const { displayName, photoURL, email } = useSelector((state) => state.auth);
+  const { allPosts } = useSelector((state) => state.movies);
+  const disptach = useDispatch()
 
   const [attatchMovieId, setAttatchMovieId] = useState("")
 
@@ -40,8 +44,9 @@ export const HomePage = () => {
     const ruta = URL.createObjectURL(selectedFile);
     setUrl(ruta);
   }, [selectedFile]);
-  const onSubmitSocial = (data) => {
-    console.log({...data,attatchMovieId});
+  const onSubmitSocial = ({description}) => {
+    disptach(startCreateNewPost({description,selectedFile,attatchMovieId,date:new Date().getTime()}))
+    console.log({selectedFile});
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -93,7 +98,7 @@ export const HomePage = () => {
             type="file"
             id="photoFile"
             className="hidden"
-            name="photoFile"
+            // name="photoFile"
             {...register("photoFile")}
             onChange={(e) => setselectedFile(e.target.files[0])}
             disabled={false}
@@ -106,7 +111,7 @@ export const HomePage = () => {
           >
             <img src={imageIcon} className="w-8" alt="" />
           </label>
-          <label
+          <div
             className={`${
               false ? "bg-gray-500" : "hover:cursor-pointer"
             } rounded-lg flex gap-3`}
@@ -116,7 +121,7 @@ export const HomePage = () => {
             }}
           >
             <img src={attachIcon} className="w-6 fill-gray-300" alt="" />
-          </label>
+          </div>
           <button
             type="submit"
             className="ml-auto text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -126,136 +131,12 @@ export const HomePage = () => {
         </div>
       </form>
 
-      <div className="w-full md:w-[680px] mx-auto my-6 bg-white rounded-lg border shadow-md dark:bg-gray-800 dark:border-gray-700">
-        <div className="flex items-center pt-4 px-8">
-          <img className="w-10 h-10 rounded-full" src={photoURL} alt="" />
-          <div className="font-medium text-black dark:text-white ml-4">
-            <div>Jese Leos</div>
-            <div className="text-sm text-gray-500 dark:text-gray-400">
-              Hace 15 min
-            </div>
-          </div>
-
-          <div className="flex justify-center ml-auto">
-            <div className="dropdown relative">
-              <div
-                className="
-                        hover:cursor-pointer
-                        dropdown-toggle
-                        font-medium
-                        text-xs
-                        flex
-                        items-center
-                        whitespace-nowrap
-                        fill-white
-                      "
-                onClick={showDropdown}
-              >
-                <OptionsIcon className="fill-black dark:fill-white" />
-              </div>
-              <ul
-                className="
-          dropdown-menu
-          min-w-max
-          absolute
-          hidden
-          bg-white
-          text-base
-          z-50
-          right-0
-          py-2
-          list-none
-          text-left
-          rounded-lg
-          shadow-lg
-          mt-1
-          m-0
-          bg-clip-padding
-          border-none
-        "
-                ref={dropElement}
-              >
-                <li>
-                  <a
-                    className="
-              dropdown-item
-              text-sm
-              py-2
-              px-4
-              font-normal
-              block
-              w-full
-              whitespace-nowrap
-              bg-transparent
-              text-gray-700
-              hover:bg-gray-100
-            "
-                    href="#"
-                  >
-                    Action
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="
-              dropdown-item
-              text-sm
-              py-2
-              px-4
-              font-normal
-              block
-              w-full
-              whitespace-nowrap
-              bg-transparent
-              text-gray-700
-              hover:bg-gray-100
-            "
-                    href="#"
-                  >
-                    Another action
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="
-              dropdown-item
-              text-sm
-              py-2
-              px-4
-              font-normal
-              block
-              w-full
-              whitespace-nowrap
-              bg-transparent
-              text-gray-700
-              hover:bg-gray-100
-            "
-                    href="#"
-                  >
-                    Something else here
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div
-          className="p-4 bg-white rounded-lg md:p-8 dark:bg-gray-800"
-          id="about"
-        >
-          <h2 className="mb-3 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
-            Powering innovation &amp; trust at 200,000+ companies worldwide
-          </h2>
-          <p className="mb-3 text-gray-500 dark:text-gray-400">
-            Empower Developers, IT Ops, and business teams to collaborate at
-            high velocity. Respond to changes and deliver great customer and
-            employee service experiences fast.
-          </p>
-        </div>
-        <div className="flex flex-wrap text-sm font-medium text-center text-gray-500 bg-gray-50 rounded-b-lg border-t border-gray-200 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-800">
-          <h1 className="py-4 px-8">Hola Mundo</h1>
-        </div>
-      </div>
+      {
+        allPosts.map(post=>(
+          <CardPost key={post.id} {...post} />
+        ))
+      }
+      
       <Modal
         show={isModalVisible}
         onClose={() => setIsModalVisible(false)}

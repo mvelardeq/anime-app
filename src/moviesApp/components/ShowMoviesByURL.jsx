@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { useRef } from "react";
 import { useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,14 +14,17 @@ export const ShowMoviesbyURL = ({ url, page }) => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getMoviesByURL(`${url}&page=1`));
-  }, [url]);
+  if(true){ //only for test
+    useEffect(() => {
+      dispatch(getMoviesByURL(`${url}&page=1`));
+    }, [url]);
+  }
+
 
   const fetchData = async () => {
     try {
 
-      const res = await fetch(`${url}&page=${movies.length / page + 1}`);
+      const res = await fetch(`${url}&page=${movies.length / page+1}`);
       const { data } = await res.json();
 
 

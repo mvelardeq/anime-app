@@ -10,7 +10,7 @@ export const ShowAttachedMovies = ({ url, page, setAttatchMovieId }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAttachMoviesByURL(`${url}&page=1`));
+    dispatch(getAttachMoviesByURL(`${url}`));
   }, [url]);
 
 

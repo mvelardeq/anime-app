@@ -1,4 +1,7 @@
+import { doc, setDoc } from "firebase/firestore"
+import { FirebaseDB } from "../../firebase/config"
 import { loginWithEmailPassword, logoutUser, signInWithEmailPassword, signInWithGoogle } from "../../firebase/providers"
+import { existUserByUid } from "../../helpers/existUserByUid"
 import { upLoadFile } from "../../helpers/uploadFile"
 import { resetMoviesState } from "../moviesApp/moviesSlice"
 import { checkingCredencials, login, logout } from "./"
@@ -16,6 +19,20 @@ export const startLoginWithGoogle = ()=>{
         const result = await signInWithGoogle()
 
         if(!result.ok) return disptach(logout(result))
+
+        // console.log(await existUserByUid(result.uid))
+
+        if(!(await existUserByUid(result.uid))){
+            const userRef = doc(FirebaseDB, `user/${result.uid}`);
+
+            await setDoc(userRef, {
+                userInfo:{
+                    displayName:result.displayName,
+                    photoURL:result.photoURL,
+                    email:result.email
+                }
+            });
+        }
 
         disptach(login(result))
 

@@ -5,7 +5,7 @@ import { MoviesApp } from './MoviesApp'
 import 'flowbite'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <MoviesApp />
-  </React.StrictMode>
+  // </React.StrictMode>
 )
