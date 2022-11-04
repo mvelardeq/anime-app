@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { OptionsIcon } from "../components";
 import { attachIcon, imageIcon } from "../../assets/icons";
 import { useForm } from "react-hook-form";
-import { Modal } from "flowbite-react";
+import { Avatar, Modal } from "flowbite-react";
 import { ShowAttachedMovies } from "../components/ShowAttachedMovies";
 import { FormSearch } from "../components/FormSearch";
 import { getMovieById } from "../../helpers/getMovieById";
@@ -52,6 +52,7 @@ export const HomePage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchMovies, setSearchMovies] = useState("");
 
+
   const dropElement = useRef(null);
   const showDropdown = () => {
     dropElement.current.classList.toggle("hidden");
@@ -65,11 +66,12 @@ export const HomePage = () => {
       >
         <div className="p-4 bg-white flex rounded-lg md:p-8 dark:bg-gray-800">
           <span className="w-1/4">
-            <img
+            {/* <img
               className="w-12 h-12 rounded-full self-start"
               src={photoURL}
               alt="Rounded avatar"
-            />
+            /> */}
+            <Avatar alt="User settings" img={photoURL} rounded={true} size={'md'} stacked={true} />
           </span>
           <div className="block w-3/4">
             <textarea

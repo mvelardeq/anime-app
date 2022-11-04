@@ -51,6 +51,16 @@ export const startSignInWithEmailPassword = ({displayName,email,password,selecte
 
         if(!result.ok) return disptach(logout(result))
 
+        const userRef = doc(FirebaseDB, `user/${result.uid}`);
+
+        await setDoc(userRef, {
+            userInfo:{
+                displayName:result.displayName,
+                photoURL:result.photoURL,
+                email:result.email
+            }
+        });
+
         disptach(login(result))
     }
 }
