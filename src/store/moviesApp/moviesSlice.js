@@ -39,7 +39,40 @@ export const moviesSlice = createSlice({
       state.allPosts = payload;
     },
     addPost: (state, { payload }) => {
-      state.allPosts.push(payload);
+      state.allPosts.unshift(payload);
+    },
+    likePost: (state,{payload})=>{
+      state.allPosts.map(el=>{
+        if(el.id === payload.id) el.likes.push({date:payload.date,userId:payload.userId})
+      })
+    },
+    dislikePost: (state,{payload})=>{
+      state.allPosts.map(el=>{
+        if(el.id === payload.id) {
+          const index = el.likes.indexOf(el.likes.find(el=>el.userId===payload.userId))
+          el.likes.splice(index,1)
+        }
+      })
+    },
+    newCommentPost:(state,{payload})=>{
+      state.allPosts.map(el=>{
+        if(el.id===payload.postId){
+
+          if(!el.comments) el.comments = []
+          delete payload.postId
+          el.comments.unshift(payload)
+
+        }
+      })
+    },
+    showingReplyForm:(state,{payload})=>{
+      state.allPosts.map(el=>{
+        if(el.id===payload.postId){
+          el.comments.map(comment=>{
+            if(comment.id===payload.commentId) comment.isReplyingActive=true
+          })
+        }
+      })
     },
     loadFavorites: (state, { payload }) => {
       state.favorites = payload;
@@ -59,6 +92,10 @@ export const {
   removeFavoriteMovie,
   resetMoviesState,
   addPost,
+  likePost,
+  dislikePost,
+  newCommentPost,
+  showingReplyForm,
   getAttachMovies,
   getPosts,
 } = moviesSlice.actions;

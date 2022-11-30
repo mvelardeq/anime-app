@@ -45,7 +45,7 @@ export const HomePage = () => {
     setUrl(ruta);
   }, [selectedFile]);
   const onSubmitSocial = ({description}) => {
-    disptach(startCreateNewPost({description,selectedFile,attatchMovieId,date:new Date().getTime()}))
+    disptach(startCreateNewPost({description,selectedFile,attatchMovieId,attachedPhoto,date:new Date().getTime()}))
     console.log({selectedFile});
   };
 
@@ -70,7 +70,7 @@ export const HomePage = () => {
               className="w-12 h-12 rounded-full self-start"
               src={photoURL}
               alt="Rounded avatar"
-            /> */}
+            /> */} 
             <Avatar alt="User settings" img={photoURL} rounded={true} size={'md'} stacked={true} />
           </span>
           <div className="block w-3/4">
