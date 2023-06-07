@@ -65,11 +65,113 @@ export const moviesSlice = createSlice({
         }
       })
     },
+    showMoreReplies: (state,{payload})=>{
+      state.allPosts.map(post=>{
+        if(post.id === payload.postId){
+          post.comments.map(comment=>{
+            if(comment.id === payload.commentId){
+
+              if(comment.replies.length-comment.countShowingReplies<3) return comment.countShowingReplies=comment.replies.length
+
+              comment.countShowingReplies = comment.countShowingReplies+3
+
+            }
+          })
+        }
+      })
+    },
     showingReplyForm:(state,{payload})=>{
       state.allPosts.map(el=>{
         if(el.id===payload.postId){
           el.comments.map(comment=>{
             if(comment.id===payload.commentId) comment.isReplyingActive=true
+          })
+        }
+      })
+    },
+    showingReplyOfReplyForm:(state,{payload})=>{
+      state.allPosts.map(el=>{
+        if(el.id===payload.postId){
+          el.comments.map(comment=>{
+            if(comment.id===payload.commentId) {
+              comment.replies.map(reply=>{
+                if(reply.id === payload.id) reply.isReplyingActive=true
+              })
+            }
+          })
+        }
+      })
+    },
+    newReplyComment: (state, {payload})=>{
+      state.allPosts.map(post=>{
+        if(post.id === payload.postId){
+          post.comments.map(comment=>{
+            if(comment.id === payload.commentId){
+              comment.replies.push({id:payload.id,date:payload.date, description:payload.description, likes:payload.likes ,userInfo:payload.userInfo, userReplyInfo:payload.userReplyInfo, userId:payload.userId, userReplyId:payload.userReplyId})
+            }
+          })
+        }
+      })
+    },
+    hidingReplyForm:(state,{payload})=>{
+      state.allPosts.map(el=>{
+        if(el.id===payload.postId){
+          el.comments.map(comment=>{
+            if(comment.id===payload.commentId) comment.isReplyingActive=false
+          })
+        }
+      })
+    },
+    likeComment: (state, {payload})=>{
+      state.allPosts.map(post=>{
+        if(post.id === payload.postId){
+          post.comments.map(comment=>{
+            if(comment.id === payload.commentId){
+              comment.likes.push({date:payload.date, userId:payload.userId})
+            }
+          })
+        }
+      })
+    },
+    dislikeComment: (state, {payload})=>{
+      state.allPosts.map(post=>{
+        if(post.id === payload.postId){
+          post.comments.map(comment=>{
+            if(comment.id === payload.commentId){
+              const index = comment.likes.indexOf(comment.likes.find(like=>like.userId===payload.userId))
+              comment.likes.splice(index,1)
+            }
+          })
+        }
+      })
+    },
+    likeReply: (state,{payload}) => {
+      state.allPosts.map(post=>{
+        if(post.id === payload.postId){
+          post.comments.map(comment=>{
+            if(comment.id === payload.commentId){
+              comment.replies.map(reply=>{
+                if(reply.id===payload.replyId){
+                  reply.likes.push({date:payload.date, userId:payload.userId})
+                }
+              })
+            }
+          })
+        }
+      })
+    },
+    dislikeReply: (state,{payload})=>{
+      state.allPosts.map(post=>{
+        if(post.id === payload.postId){
+          post.comments.map(comment=>{
+            if(comment.id === payload.commentId){
+              comment.replies.map(reply=>{
+                if(reply.id===payload.replyId){
+                  const index = reply.likes.indexOf(reply.likes.find(like=>like.userId===payload.userId))
+                  reply.likes.splice(index,1)
+                }
+              })
+            }
           })
         }
       })
@@ -95,7 +197,15 @@ export const {
   likePost,
   dislikePost,
   newCommentPost,
+  showMoreReplies,
   showingReplyForm,
+  showingReplyOfReplyForm,
+  newReplyComment,
+  hidingReplyForm,
+  likeComment,
+  dislikeComment,
+  likeReply,
+  dislikeReply,
   getAttachMovies,
   getPosts,
 } = moviesSlice.actions;

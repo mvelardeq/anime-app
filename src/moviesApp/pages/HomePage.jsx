@@ -10,6 +10,7 @@ import { FormSearch } from "../components/FormSearch";
 import { getMovieById } from "../../helpers/getMovieById";
 import { startCreateNewPost } from "../../store/moviesApp/thunks";
 import { CardPost } from "../components/CardPost";
+import { Link } from "react-router-dom";
 
 export const HomePage = () => {
   const { displayName, photoURL, email } = useSelector((state) => state.auth);
@@ -71,7 +72,9 @@ export const HomePage = () => {
               src={photoURL}
               alt="Rounded avatar"
             /> */} 
-            <Avatar alt="User settings" img={photoURL} rounded={true} size={'md'} stacked={true} />
+            <Link to={`/my-profile`}>
+              <Avatar alt="User settings" img={photoURL} rounded={true} size={'md'} stacked={true} />
+            </Link>
           </span>
           <div className="block w-3/4">
             <textarea

@@ -76,7 +76,7 @@ export const MoviesLayout = ({children}) => {
           <Navbar.Link onClick={useLinkClickHandler("/favorites")} href="/favorites" active={useLocation().pathname==="/favorites"}>
             Favorites
           </Navbar.Link>
-          <Navbar.Link onClick={useLinkClickHandler("/profile")} href="/profile" active={useLocation().pathname==="/profile"}>
+          <Navbar.Link onClick={useLinkClickHandler("/my-profile")} href="/my-profile" active={useLocation().pathname==="/my-profile"}>
             Profile
           </Navbar.Link>
         </Navbar.Collapse>
